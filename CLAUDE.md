@@ -54,3 +54,8 @@ When adding a new update section that depends on a tool installed in a non-stand
 - Use `run_step "description" "command"` to wrap commands with error handling and dry-run support
 - Use `add_summary()` to register results for the end-of-run summary
 - Check tool availability with `command -v` before use
+
+## Shared repository guidance
+
+Read [AGENTS.md](AGENTS.md) for the shared contributor and agent instructions.
+Keep the project-specific constraints above in effect.

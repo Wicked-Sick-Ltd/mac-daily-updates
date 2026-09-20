@@ -67,3 +67,15 @@ Logs are written to `~/.local/log/daily-update-YYYY-MM-DD.log`.
 - Python 3 / pip3
 - Ruby / gem (for gem updates)
 - [mas](https://github.com/mas-cli/mas) (auto-installed if missing)
+
+<!-- repository-guidance:begin -->
+## Contributing and agent guidance
+
+- [Contributor guide](CONTRIBUTING.md): development workflow and validation.
+- [Agent instructions](AGENTS.md): shared guidance for Codex and other coding agents.
+- [Security policy](SECURITY.md): private vulnerability reporting.
+
+## Repository license
+
+MIT licensed; see [LICENSE](LICENSE). Preserve third-party notices.
+<!-- repository-guidance:end -->
