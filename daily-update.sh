@@ -100,6 +100,11 @@ if [[ -d "${HOME}/.npm-global/bin" ]]; then
     export PATH="${HOME}/.npm-global/bin:${PATH}"
 fi
 
+# Use Homebrew Ruby if available (keg-only, not linked by default)
+if [[ -d "$(brew --prefix 2>/dev/null)/opt/ruby/bin" ]]; then
+    export PATH="$(brew --prefix)/opt/ruby/bin:${PATH}"
+fi
+
 # Use user-writable gem directory instead of system /Library/Ruby/Gems
 if command -v ruby &>/dev/null; then
     export GEM_HOME="${HOME}/.gem/ruby/$(ruby -e 'puts RbConfig::CONFIG["ruby_version"]')"
