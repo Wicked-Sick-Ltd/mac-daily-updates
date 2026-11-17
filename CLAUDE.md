@@ -31,7 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A single-file bash script (`daily-update.sh`) that automates daily macOS maintenance — updating Homebrew, npm, pip3, Ruby gems, Mac App Store apps, VS Code, and system software. Designed to run unattended via launchd or cron. There is no build step, test suite, or linter.
+A single-file bash script (`daily-update.sh`) that automates daily macOS maintenance — updating Homebrew, npm, pip3, Ruby gems, Mac App Store apps, VS Code, and system software. Designed to run unattended via launchd or cron. There is no build step or test suite.
 
 ## Running
 
@@ -39,6 +39,8 @@ A single-file bash script (`daily-update.sh`) that automates daily macOS mainten
 ./daily-update.sh            # Run all updates
 ./daily-update.sh --dry-run  # Preview without making changes
 ```
+
+Linux cloud agents validate with the checks in the README section "Cloud agent environment". They do not execute this script.
 
 ## Architecture
 

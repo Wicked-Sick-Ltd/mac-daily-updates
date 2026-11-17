@@ -11,6 +11,7 @@ A shell script that automates daily maintenance on macOS — keeping Homebrew, n
 Run commands from the repository root unless the component documentation says otherwise. Configure local dependencies and test services before application tests.
 
 - `bash -n daily-update.sh` — check shell syntax without running operational actions.
+- On Linux cloud agents, also run `shellcheck` on the shell scripts and parse `*.plist` with Python `plistlib`. See the README section "Cloud agent environment". Do not run `daily-update.sh`, Homebrew, or `softwareupdate` there. Report pre-existing shellcheck findings; do not change maintenance behaviour to clear them.
 
 ## Coding and Testing
 
