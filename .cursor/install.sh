@@ -19,20 +19,25 @@ run_root() {
   fi
 }
 
-run_root env DEBIAN_FRONTEND=noninteractive apt-get update
-run_root env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-  ca-certificates \
-  curl \
-  python3 \
-  shellcheck
+install_packages() {
+  run_root env DEBIAN_FRONTEND=noninteractive apt-get update
+  run_root env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    python3 \
+    shellcheck
+}
 
 install_shfmt() {
   local version="3.14.1"
-  local dest="/usr/local/bin/shfmt"
-  local uname_m shfmt_arch sum url tmp
+  local dest="${SHFMT_DEST:-/usr/local/bin/shfmt}"
+  local uname_m shfmt_arch sum url tmp ver
 
-  if [[ -x "$dest" ]] && "$dest" --version 2>/dev/null | grep -q '3\.14\.1'; then
-    return 0
+  if [[ -x "$dest" ]]; then
+    ver="$("$dest" --version 2>/dev/null || true)"
+    if [[ "$ver" == *3.14.1* ]]; then
+      return 0
+    fi
   fi
 
   uname_m="$(uname -m)"
@@ -46,7 +51,7 @@ install_shfmt() {
       sum="5f2db09dae91fca848f7adbdd014632e921a383863a2ad7e0450ad3aba0c6489"
       ;;
     *)
-      echo "warning: shfmt has no pinned binary for ${uname_m}; skipping shfmt" >&2
+      echo "warning: shfmt has no pinned binary for ${uname_m}; continuing without shfmt" >&2
       return 0
       ;;
   esac
@@ -55,15 +60,19 @@ install_shfmt() {
   url="https://github.com/mvdan/sh/releases/download/v${version}/shfmt_v${version}_linux_${shfmt_arch}"
   if ! curl -fsSL "$url" -o "$tmp"; then
     rm -f "$tmp"
-    echo "error: failed to download shfmt ${version}" >&2
-    return 1
+    echo "warning: failed to download shfmt ${version}; continuing without shfmt" >&2
+    return 0
   fi
   if ! echo "${sum}  ${tmp}" | sha256sum -c -; then
     rm -f "$tmp"
-    echo "error: shfmt checksum mismatch" >&2
+    echo "warning: shfmt checksum mismatch; refusing the download and continuing without shfmt" >&2
+    return 0
+  fi
+  if ! run_root install -m 0755 "$tmp" "$dest"; then
+    rm -f "$tmp"
+    echo "error: failed to install shfmt" >&2
     return 1
   fi
-  run_root install -m 0755 "$tmp" "$dest"
   rm -f "$tmp"
 }
 
@@ -78,11 +87,27 @@ install_bats_if_tests_exist() {
   run_root env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends bats
 }
 
-install_shfmt
-install_bats_if_tests_exist
-python3 -c 'import plistlib'
+# ShellCheck and python3 are required. shfmt is optional: no documented
+# check runs it, and a missing binary must not fail the environment install.
+report_tools() {
+  command -v shellcheck
+  command -v python3
+  if command -v shfmt >/dev/null 2>&1; then
+    command -v shfmt
+  else
+    echo "warning: shfmt is not on PATH; continuing without it" >&2
+  fi
+}
 
-echo "install ok"
-command -v shellcheck
-command -v shfmt
-command -v python3
+main() {
+  install_packages
+  install_shfmt
+  install_bats_if_tests_exist
+  python3 -c 'import plistlib'
+  report_tools
+  echo "install ok"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
