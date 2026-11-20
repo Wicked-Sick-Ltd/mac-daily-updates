@@ -11,6 +11,7 @@ Start from the current `main` branch and use a focused topic branch. Preserve un
 ## Validation
 
 - `bash -n daily-update.sh` — check shell syntax without running operational actions.
+- Linux cloud agents also run `shellcheck` and Python `plistlib` checks. See the README section "Cloud agent environment". Do not execute the maintenance script on Linux.
 
 Run the relevant checks before submitting. For documentation-only changes, verify links and commands and run `git diff --check`. Record unavailable dependencies or skipped checks explicitly. Use isolated test data and mock external services where supported.
 

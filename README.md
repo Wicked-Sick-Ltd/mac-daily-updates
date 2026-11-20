@@ -68,6 +68,26 @@ Logs are written to `~/.local/log/daily-update-YYYY-MM-DD.log`.
 - Ruby / gem (for gem updates)
 - [mas](https://github.com/mas-cli/mas) (auto-installed if missing)
 
+## Cloud agent environment
+
+Cursor Cloud Agents for this repo run on Linux and validate only. `.cursor/install.sh` installs ShellCheck and Python (for `plistlib`). It installs the pinned shfmt binary when that download matches its checksum, and continues without shfmt when the architecture is unsupported or the download fails. It installs bats only when `*.bats` files are already in the repo. The install needs no secrets.
+
+Run the maintenance script on a Mac. On Linux, use:
+
+```bash
+bash -n daily-update.sh
+bash -n .cursor/install.sh
+bash .cursor/install_test.sh
+shellcheck -x daily-update.sh .cursor/install.sh .cursor/install_test.sh
+python3 -c 'import plistlib, pathlib
+for path in pathlib.Path(".").rglob("*.plist"):
+    if ".git" in path.parts:
+        continue
+    with path.open("rb") as handle:
+        plistlib.load(handle)
+    print(path)'
+```
+
 <!-- repository-guidance:begin -->
 ## Contributing and agent guidance
 

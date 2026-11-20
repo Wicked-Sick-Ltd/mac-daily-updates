@@ -1,0 +1,4 @@
+{
+  "name": "mac-daily-updates",
+  "install": "bash .cursor/install.sh"
+}
